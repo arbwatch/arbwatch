@@ -23,15 +23,15 @@
 $apis = [
     'MBC_LTC' => 'https://www.mercadobitcoin.net/api/LTC/ticker/',
     'MBC_BTC' => 'https://www.mercadobitcoin.net/api/BTC/ticker/',
+    'MBC_BCH' => 'https://www.mercadobitcoin.net/api/BCH/ticker/',
     'POL' => 'https://poloniex.com/public?command=returnTicker',
     'BTC_fee' => 'https://bitcoinfees.earn.com/api/v1/fees/recommended'
 ];
 
 
 $mbc_ltc = json_decode(file_get_contents($apis['MBC_LTC']));  
-
 $mbc_btc = json_decode(file_get_contents($apis['MBC_BTC'])); 
-
+$mbc_bch = json_decode(file_get_contents($apis['MBC_BCH'])); 
 $polo = json_decode(file_get_contents($apis['POL']));  
 
 
@@ -40,8 +40,13 @@ $poloniex = [
     'LTCBTC' => [
         'sell' => (float)$polo->BTC_LTC->lowestAsk,
         'buy' => (float)$polo->BTC_LTC->highestBid
-    ]    
+    ],
+    'BCHBTC' => [
+        'sell' => (float)$polo->BTC_LTC->lowestAsk,
+        'buy' => (float)$polo->BTC_LTC->highestBid
+    ]
 ];
+
 
 
 $mercadobitcoin = [
@@ -50,6 +55,10 @@ $mercadobitcoin = [
         'buy' => (float)$mbc_btc->ticker->buy
     ],
     'LTCBRL' => [
+        'sell' => (float)$mbc_ltc->ticker->sell,
+        'buy' => (float)$mbc_ltc->ticker->buy
+    ],
+    'BCHBRL' => [
         'sell' => (float)$mbc_ltc->ticker->sell,
         'buy' => (float)$mbc_ltc->ticker->buy
     ]   
@@ -221,9 +230,9 @@ $mercadobitcoin = [
         
         $order_buy_ltcbtc = ($transfered_btc / $poloniex['LTCBTC']['buy'])*(1-0.0015);
         
-        $transfered_ltc = ($order_buy_ltcbtc - 0.001)*0.99; // poloniex fee + mining fees
+        $transfered_ltc = ($order_buy_ltcbtc - 0.001) * 0.99; // poloniex fee + mining fees
         
-        $premium = (($transfered_ltc-$invest)/$invest)*100;
+        $premium = (($transfered_ltc-$invest)/$invest) * 100;
         
         $class_premium = 'danger';
         
